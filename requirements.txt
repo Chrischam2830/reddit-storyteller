@@ -1,4 +1,4 @@
-moviepy
+moviepy.editor
 openai
 praw
 requests
