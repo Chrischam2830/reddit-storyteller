@@ -4,7 +4,7 @@ reddit:
   username: BrotherOk1877
   password: Cham@2830
   user_agent: "RedditStoryBot/1.0 by /u/BrotherOk1877"
-  subreddit: "AskReddit"
+  subreddit: "amitheasshole"
 
 openai:
   api_key: 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
