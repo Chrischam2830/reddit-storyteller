@@ -8,7 +8,7 @@ def rewrite_story(title, body, config):
     client = OpenAI(api_key=config["openai"]["api_key"])
     
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4.1",
         messages=[
             {"role": "user", "content": prompt}
         ],
