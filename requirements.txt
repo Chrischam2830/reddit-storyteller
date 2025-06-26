@@ -1,0 +1,6 @@
+praw
+openai
+moviepy
+requests
+PyYAML
+elevenlabs
