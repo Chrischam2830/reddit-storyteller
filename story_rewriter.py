@@ -1,18 +1,17 @@
 # story_rewriter.py
-from openai import OpenAI
+import openai
 
 def rewrite_story(title, body, config):
-    prompt = (
-        f"Rewrite the following Reddit story to be more dramatic, engaging, and concise. "
-        f"Include dialogue and suspenseful tone. Keep it under 2 minutes when read aloud.\n\n"
-        f"Title: {title}\n\n{body}"
-    )
-
-    client = OpenAI(api_key=config["openai"]["api_key"])
+    prompt = f"Rewrite this Reddit story to be more dramatic and engaging for a TikTok video:\n\nTitle: {title}\n\nStory:\n{body}"
+    
+    client = openai.OpenAI(api_key=config['openai']['api_key'])
 
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {"role": "system", "content": "You are a dramatic TikTok scriptwriter."},
+            {"role": "user", "content": prompt}
+        ],
         temperature=0.8
     )
 
