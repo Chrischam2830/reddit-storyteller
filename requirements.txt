@@ -1,6 +1,7 @@
-moviepy.editor
+moviepy
 openai
 praw
 requests
 PyYAML
 elevenlabs
+moviepy
