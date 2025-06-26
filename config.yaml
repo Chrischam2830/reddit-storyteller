@@ -7,6 +7,6 @@ reddit:
   subreddit: ["AskReddit", "tifu", "AmItheAsshole", "confessions", "funny"]
 
 openai:
-  api_key: "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"
+  api_key: ""
 elevenlabs:
   api_key: "sk_4b8c540f8c00d8db8cd126cc45c41c6324490eba60906656"
