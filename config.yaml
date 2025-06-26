@@ -1,12 +1,12 @@
 reddit:
-  client_id: 8wlGeo867S2_Tv4pTmDPpQ
-  client_secret: 4z3qMAvT4fN_sKuszBRrOm5tsJv-yQ
-  username: BrotherOk1877
-  password: Cham@2830
+  client_id: "8wlGeo867S2_Tv4pTmDPpQ"
+  client_secret: "4z3qMAvT4fN_sKuszBRrOm5tsJv-yQ"
+  username: "BrotherOk1877"
+  password: "Cham@2830"
   user_agent: "RedditStoryBot/1.0 by /u/BrotherOk1877"
   subreddit: ["AskReddit", "tifu", "AmItheAsshole", "confessions", "funny"]
 
 openai:
-  api_key: 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
+  api_key: "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"
 elevenlabs:
-  api_key: sk_4b8c540f8c00d8db8cd126cc45c41c6324490eba60906656
+  api_key: "sk_4b8c540f8c00d8db8cd126cc45c41c6324490eba60906656"
