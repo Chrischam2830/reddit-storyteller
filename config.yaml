@@ -1,0 +1,15 @@
+reddit:
+  client_id: 8wlGeo867S2_Tv4pTmDPpQ
+  client_secret: 4z3qMAvT4fN_sKuszBRrOm5tsJv-yQ
+  username: BrotherOk1877
+  password: Cham@2830
+  user_agent: "RedditStoryBot/1.0 by /u/BrotherOk1877"
+  subreddit: "AskReddit"
+
+openai:
+  api_key: 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
+
+elevenlabs:
+  api_key: sk_fef2e6d7b00ba593e447852ed5d26b9232dae07b61422579
+
+
