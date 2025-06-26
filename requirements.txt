@@ -1,6 +1,6 @@
-praw
-openai
 moviepy
+openai
+praw
 requests
 PyYAML
 elevenlabs
