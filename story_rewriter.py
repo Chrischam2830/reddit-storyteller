@@ -1,14 +1,11 @@
-import openai
+# story_rewriter.py
+from openai import OpenAI
 
 def rewrite_story(title, body, config):
-    client = openai.OpenAI(
-        api_key=config["openai"]["api_key"],
-        organization=config["openai"]["organization"]
-    )
-    prompt = f"Rewrite this Reddit story dramatically for TikTok:\nTitle: {title}\n\n{body}"
-    resp = client.chat.completions.create(
+    client = OpenAI(api_key=config["openai"]["api_key"])
+    response = client.chat.completions.create(
         model="gpt-4",
-        messages=[{"role":"user","content":prompt}],
+        messages=[{"role":"user", "content": f"{title}\n\n{body}"}],
         temperature=0.8
     )
-    return resp.choices[0].message.content.strip()
+    return response.choices[0].message.content.strip()
