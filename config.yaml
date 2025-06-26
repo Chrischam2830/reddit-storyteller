@@ -7,7 +7,6 @@ reddit:
   subreddit: "amitheasshole"
 
 openai:
-  api_key: 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
-
+  api_key: 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
 elevenlabs:
   api_key: sk_fef2e6d7b00ba593e447852ed5d26b9232dae07b61422579
