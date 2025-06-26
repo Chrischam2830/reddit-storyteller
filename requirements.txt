@@ -1,7 +1,6 @@
-moviepy
+moviepy==1.0.3
 openai
 praw
 requests
 PyYAML
 elevenlabs
-moviepy
