@@ -4,7 +4,7 @@ reddit:
   username: BrotherOk1877
   password: Cham@2830
   user_agent: "RedditStoryBot/1.0 by /u/BrotherOk1877"
-  subreddit: "amitheasshole"
+  subreddit: ["AskReddit", "tifu", "AmItheAsshole", "confessions", "funny"]
 
 openai:
   api_key: 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
