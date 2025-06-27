@@ -8,5 +8,3 @@ reddit:
 
 openai:
   api_key: ""
-elevenlabs:
-  api_key: "sk_4b8c540f8c00d8db8cd126cc45c41c6324490eba60906656"
