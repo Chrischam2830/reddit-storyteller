@@ -2,23 +2,34 @@ import os
 import requests
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFileClip
 
+def download_file_from_google_drive(file_id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+    session = requests.Session()
+    response = session.get(URL, params={'id': file_id}, stream=True)
+    token = None
+
+    # Look for the confirm token (for big files)
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            token = value
+            break
+
+    if token:
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    CHUNK_SIZE = 32768
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:
+                f.write(chunk)
+
 def ensure_subway_video():
     if not os.path.exists("subway.mp4"):
-        print("⏬ Downloading subway.mp4 from Google Drive...")
-        file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"  # Make sure this is your full file ID!
-        url = f"https://drive.google.com/uc?export=download&id=1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"
-        
-        response = requests.get(url)
-        print("HTTP status code:", response.status_code)
-        print("First 500 chars of response:")
-        print(response.text[:500])
-
-        if response.status_code == 200 and len(response.content) > 1000000:
-            with open("subway.mp4", "wb") as f:
-                f.write(response.content)
-            print("✅ subway.mp4 downloaded.")
-        else:
-            raise Exception("Failed to download subway.mp4. Make sure sharing is set to 'Anyone with link' and file ID is correct.")
+        print("⏬ Downloading subway.mp4 from Google Drive (with confirm token support)...")
+        file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"
+        download_file_from_google_drive(file_id, "subway.mp4")
+        print("✅ subway.mp4 downloaded.")
 
 def create_video(script, voice_path, output_path="output.mp4"):
     ensure_subway_video()  # ✅ Make sure the background video exists
