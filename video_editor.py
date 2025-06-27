@@ -5,15 +5,16 @@ from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFil
 def ensure_subway_video():
     if not os.path.exists("subway.mp4"):
         print("⏬ Downloading subway.mp4 from Google Drive...")
-        file_id = "7oUkW4HVQEm2iQm6hB6Xxr0"  # Replace with your file ID
-        url = https://drive.google.com/uc?export=download&id=1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0
+        file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"  # Make sure this is your full file ID!
+        url = f"https://drive.google.com/uc?export=download&id={file_id}"
 
         response = requests.get(url)
-        if response.status_code == 200:
+        if response.status_code == 200 and len(response.content) > 1000000:
             with open("subway.mp4", "wb") as f:
                 f.write(response.content)
+            print("✅ subway.mp4 downloaded.")
         else:
-            raise Exception("Failed to download subway.mp4")
+            raise Exception("Failed to download subway.mp4. Make sure sharing is set to 'Anyone with link' and file ID is correct.")
 
 def create_video(script, voice_path, output_path="output.mp4"):
     ensure_subway_video()  # ✅ Make sure the background video exists
