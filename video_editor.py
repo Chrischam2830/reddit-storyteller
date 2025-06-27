@@ -1,6 +1,7 @@
 import os
 import requests
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFileClip
+from moviepy.video.fx.all import loop
 
 def download_file_from_google_drive(file_id, destination):
     URL = "https://docs.google.com/uc?export=download"
@@ -27,7 +28,7 @@ def download_file_from_google_drive(file_id, destination):
 def ensure_subway_video():
     if not os.path.exists("subway.mp4"):
         print("⏬ Downloading subway.mp4 from Google Drive (with confirm token support)...")
-        file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"
+        file_id = "1IBRp3tl-dc1sJQlB0md5OZMmt4WCwMrF"   # <--- THIS IS YOUR NEW FILE ID!
         download_file_from_google_drive(file_id, "subway.mp4")
         print("✅ subway.mp4 downloaded.")
 
@@ -36,8 +37,10 @@ def create_video(script, voice_path, output_path="output.mp4"):
 
     print("🎬 Creating video...")
 
-    # Load video and audio
-    clip = VideoFileClip("subway.mp4").subclip(0, 60).resize(width=1080)
+    # Load and loop video to at least 60 seconds
+    base_clip = VideoFileClip("subway.mp4")
+    clip = loop(base_clip, duration=60).resize(width=1080)
+
     audio = AudioFileClip(voice_path)
 
     # Create text overlay
