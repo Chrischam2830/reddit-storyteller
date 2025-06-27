@@ -8,8 +8,8 @@ def ensure_subway_video():
         file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"  # Make sure this is your full file ID!
         url = f"https://drive.google.com/uc?export=download&id=1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"
         
-        response = requests.get(url)
-        print("HTTP status code:", response.status_code)
+response = requests.get(url)
+print("HTTP status code:", response.status_code)
 print("First 500 chars of response:")
 print(response.text[:500])
 
