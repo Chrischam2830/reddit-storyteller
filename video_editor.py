@@ -5,8 +5,9 @@ from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFil
 def ensure_subway_video():
     if not os.path.exists("subway.mp4"):
         print("⏬ Downloading subway.mp4 from Google Drive...")
-        file_id = "1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0"  # Replace with your file ID
-        url = f"https://drive.google.com/uc?id={file_id}"
+        file_id = "7oUkW4HVQEm2iQm6hB6Xxr0"  # Replace with your file ID
+        url = https://drive.google.com/uc?export=download&id=1fA85mtH3-7oUkW4HVQEm2iQm6hB6Xxr0
+
         response = requests.get(url)
         if response.status_code == 200:
             with open("subway.mp4", "wb") as f:
