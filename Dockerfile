@@ -3,33 +3,29 @@ FROM python:3.11
 WORKDIR /app
 COPY . /app
 
-# Install dependencies
+# Install dependencies (including ffmpeg for video, and all fonts you might use)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends imagemagick fonts-dejavu-core fonts-freefont-ttf fontconfig wget && \
+    apt-get install -y --no-install-recommends \
+      imagemagick ffmpeg fonts-dejavu-core fonts-freefont-ttf fontconfig wget && \
     rm -rf /var/lib/apt/lists/*
 
-# Fix ImageMagick policy
-RUN cat > /etc/ImageMagick-6/policy.xml <<EOF
-<policymap>
-  <policy domain="resource" name="memory" value="2GiB"/>
-  <policy domain="resource" name="map" value="4GiB"/>
-  <policy domain="resource" name="width" value="16KP"/>
-  <policy domain="resource" name="height" value="16KP"/>
-  <policy domain="resource" name="area" value="128MP"/>
-  <policy domain="resource" name="disk" value="10GiB"/>
+# Overwrite BOTH possible ImageMagick policy.xml locations
+RUN mkdir -p /etc/ImageMagick-6 /etc/ImageMagick && \
+    echo '<policymap>
+  <policy domain="resource" name="memory" value="4GiB"/>
+  <policy domain="resource" name="map" value="8GiB"/>
+  <policy domain="resource" name="width" value="32KP"/>
+  <policy domain="resource" name="height" value="32KP"/>
+  <policy domain="resource" name="area" value="256MP"/>
+  <policy domain="resource" name="disk" value="20GiB"/>
   <policy domain="coder" rights="read|write" pattern="*" />
   <policy domain="path" rights="read|write" pattern="@*" />
-</policymap>
-EOF
+</policymap>' | tee /etc/ImageMagick-6/policy.xml /etc/ImageMagick/policy.xml
 
 RUN pip install --upgrade pip
 
-# Install requirements and moviepy fixes
+# Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
-RUN rm -rf /usr/local/lib/python3.11/site-packages/moviepy* && \
-    rm -rf /usr/local/lib/python3.11/site-packages/MoviePy* && \
-    pip install --force-reinstall --no-cache-dir moviepy==1.0.3
-RUN pip install --force-reinstall --no-cache-dir pillow==9.5.0
 
 # Download subway.mp4 from Google Drive using bash script
 ADD download_gdrive.sh /app/download_gdrive.sh
