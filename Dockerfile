@@ -8,10 +8,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends imagemagick fonts-dejavu-core fonts-freefont-ttf fontconfig wget && \
     rm -rf /var/lib/apt/lists/*
 
-# Fix ImageMagick policy.xml
-RUN mkdir -p /etc/ImageMagick-6 && \
-    cat > /etc/ImageMagick-6/policy.xml <<EOF
-<policymap>
+# Fix ImageMagick policy.xml (one-liner echo to avoid Dockerfile parse errors)
+RUN mkdir -p /etc/ImageMagick-6 /etc/ImageMagick && \
+    echo '<policymap>
   <policy domain="resource" name="memory" value="4GiB"/>
   <policy domain="resource" name="map" value="8GiB"/>
   <policy domain="resource" name="width" value="32KP"/>
@@ -20,8 +19,7 @@ RUN mkdir -p /etc/ImageMagick-6 && \
   <policy domain="resource" name="disk" value="20GiB"/>
   <policy domain="coder" rights="read|write" pattern="*"/>
   <policy domain="path" rights="read|write" pattern="@*"/>
-</policymap>
-EOF
+</policymap>' > /etc/ImageMagick-6/policy.xml && cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick/policy.xml
 
 RUN pip install --upgrade pip
 
