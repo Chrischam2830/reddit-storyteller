@@ -1,9 +1,9 @@
 reddit:
-  client_id: "8wlGeo867S2_Tv4pTmDPpQ"
-  client_secret: "4z3qMAvT4fN_sKuszBRrOm5tsJv-yQ"
-  username: "BrotherOk1877"
-  password: "Cham@2830"
-  user_agent: "RedditStoryBot/1.0 by /u/BrotherOk1877"
+  client_id: ""
+  client_secret: ""
+  username: ""
+  password: ""
+  user_agent: ""
   subreddit: ["AskReddit", "tifu", "AmItheAsshole", "confessions", "funny"]
 
 openai:
