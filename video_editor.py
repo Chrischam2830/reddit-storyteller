@@ -4,14 +4,17 @@ def create_video(script, audio_path, background_path='subway.mp4', output_path='
     # Load the background video
     clip = VideoFileClip(background_path)
 
-    # Create a text clip with width limited to 80% of video width
+    # Create a text clip with SAFE width AND height (max 80% of video width, 30% of video height)
+    txt_width = int(clip.w * 0.8)
+    txt_height = int(clip.h * 0.3)
+
     txt = TextClip(
         script,
         fontsize=48,
         color='white',
-        font="DejaVu-Sans",   # Must match a font installed in Dockerfile
+        font="DejaVu-Sans",
         method='caption',
-        size=(int(clip.w * 0.8), None)   # 80% of width, height auto
+        size=(txt_width, txt_height)  # Constrain both width AND height!
     ).set_position('center').set_duration(clip.duration)
 
     # Load the audio
@@ -26,6 +29,3 @@ def create_video(script, audio_path, background_path='subway.mp4', output_path='
     # Export final video
     video.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=clip.fps)
     print(f"✅ Video saved as {output_path}")
-
-# Example usage:
-# create_video("This is a test script", "audio.mp3")
