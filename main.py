@@ -11,23 +11,29 @@ from tts_generator import generate_voiceover
 from video_editor import create_video
 
 def upload_to_gdrive(local_file, drive_folder_id):
-    service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
-    creds = service_account.Credentials.from_service_account_info(
-        service_account_info,
-        scopes=["https://www.googleapis.com/auth/drive.file"]
-    )
-    service = build('drive', 'v3', credentials=creds)
-    file_metadata = {
-        'name': os.path.basename(local_file),
-        'parents': [drive_folder_id]
-    }
-    media = MediaFileUpload(local_file, mimetype='video/mp4')
-    file = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id,webViewLink'
-    ).execute()
-    print(f"Uploaded to Google Drive: {file.get('webViewLink')}")
+    try:
+        # Load credentials from Render secret
+        service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+        creds = service_account.Credentials.from_service_account_info(
+            service_account_info,
+            scopes=["https://www.googleapis.com/auth/drive.file"]
+        )
+        service = build('drive', 'v3', credentials=creds)
+        file_metadata = {
+            'name': os.path.basename(local_file),
+            'parents': [drive_folder_id]
+        }
+        media = MediaFileUpload(local_file, mimetype='video/mp4')
+        file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id,webViewLink'
+        ).execute()
+        print(f"✅ Uploaded to Google Drive: {file.get('webViewLink')}")
+    except Exception as e:
+        print("❌ Error uploading to Google Drive:", e)
+        import traceback
+        traceback.print_exc()
 
 def main():
     config = load_config()
