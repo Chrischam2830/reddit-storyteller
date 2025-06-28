@@ -5,21 +5,24 @@ COPY . /app
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends imagemagick fonts-dejavu-core fonts-freefont-ttf fontconfig wget && \
+    apt-get install -y --no-install-recommends \
+        imagemagick fonts-dejavu-core fonts-freefont-ttf fontconfig wget && \
     rm -rf /var/lib/apt/lists/*
 
-# Fix ImageMagick policy.xml (one-liner echo to avoid Dockerfile parse errors)
-RUN mkdir -p /etc/ImageMagick-6 /etc/ImageMagick && \
-    echo '<policymap>
-  <policy domain="resource" name="memory" value="4GiB"/>
-  <policy domain="resource" name="map" value="8GiB"/>
-  <policy domain="resource" name="width" value="32KP"/>
-  <policy domain="resource" name="height" value="32KP"/>
-  <policy domain="resource" name="area" value="256MP"/>
-  <policy domain="resource" name="disk" value="20GiB"/>
-  <policy domain="coder" rights="read|write" pattern="*"/>
-  <policy domain="path" rights="read|write" pattern="@*"/>
-</policymap>' > /etc/ImageMagick-6/policy.xml && cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick/policy.xml
+# Fix ImageMagick policy.xml (correct multiline with printf, NOT echo/cat)
+RUN mkdir -p /etc/ImageMagick-6 && \
+    printf '%s\n' \
+    '<policymap>' \
+    '  <policy domain="resource" name="memory" value="4GiB"/>' \
+    '  <policy domain="resource" name="map" value="8GiB"/>' \
+    '  <policy domain="resource" name="width" value="32KP"/>' \
+    '  <policy domain="resource" name="height" value="32KP"/>' \
+    '  <policy domain="resource" name="area" value="256MP"/>' \
+    '  <policy domain="resource" name="disk" value="20GiB"/>' \
+    '  <policy domain="coder" rights="read|write" pattern="*"/>' \
+    '  <policy domain="path" rights="read|write" pattern="@*"/>' \
+    '</policymap>' \
+    > /etc/ImageMagick-6/policy.xml
 
 RUN pip install --upgrade pip
 
