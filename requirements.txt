@@ -4,5 +4,6 @@ gTTS
 requests
 pillow==9.5.0
 google-api-python-client
+google-auth
 google-auth-httplib2
 google-auth-oauthlib
