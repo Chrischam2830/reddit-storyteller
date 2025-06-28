@@ -1,5 +1,6 @@
 import os
 import json
+import traceback
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -11,11 +12,17 @@ from tts_generator import generate_voiceover
 from video_editor import create_video
 
 def upload_to_gdrive(local_file, drive_folder_id):
-    import traceback
     print("UPLOAD FUNC: Starting upload_to_gdrive()")
+    if not os.path.exists(local_file):
+        print(f"[ERROR] File '{local_file}' does not exist! Skipping upload.")
+        return
     try:
+        sa_env_var = "GOOGLE_APPLICATION_CREDENTIALS_JSON"
+        if sa_env_var not in os.environ:
+            print(f"[ERROR] Env var '{sa_env_var}' not set! Upload cancelled.")
+            return
         print("UPLOAD FUNC: Loading service account info")
-        service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+        service_account_info = json.loads(os.environ[sa_env_var])
         print("UPLOAD FUNC: Loaded service account JSON.")
         creds = service_account.Credentials.from_service_account_info(
             service_account_info,
@@ -53,8 +60,20 @@ def main():
     
     background_path = "subway.mp4"
     output_path = "output.mp4"
-    create_video(script, audio, background_path, output_path)
-    print("MAIN: Done making video!")
+    try:
+        create_video(script, audio, background_path, output_path)
+        print("MAIN: Done making video!")
+    except Exception as e:
+        print(f"[ERROR] create_video failed: {e}")
+        traceback.print_exc()
+        return  # Don't attempt upload if video failed
+
+    # Check output exists before upload
+    if os.path.exists(output_path):
+        print("MAIN: Video file exists, ready to upload")
+    else:
+        print("MAIN: Video file does NOT exist! Skipping upload.")
+        return
 
     # Upload to Google Drive
     drive_folder_id = "17YVgMsqt1AjKgh_Vz2m6Uc0Pk4lxDhKL"
