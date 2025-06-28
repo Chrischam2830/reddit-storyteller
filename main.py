@@ -9,7 +9,10 @@ def main():
     post = fetch_top_post(config)
     script = rewrite_story(post['title'], post['body'], config)
     audio = generate_voiceover(script, config)
-    create_video(script, audio)
+    
+    background_path = "subway.mp4"  # Make sure this exists!
+    output_path = "output.mp4"
+    create_video(script, audio, background_path, output_path)
     print("✅ Done!")
 
 if __name__ == "__main__":
