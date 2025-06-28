@@ -1,55 +1,34 @@
-import os
-import requests
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFileClip
-from moviepy.video.fx.all import loop
 
-def download_file_from_google_drive(file_id, destination):
-    URL = "https://docs.google.com/uc?export=download"
-    session = requests.Session()
-    response = session.get(URL, params={'id': file_id}, stream=True)
-    token = None
+def create_video(script, audio_path, background_path='subway.mp4', output_path='output.mp4'):
+    # Load the background video
+    clip = VideoFileClip(background_path)
 
-    # Look for the confirm token (for big files)
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            token = value
-            break
+    # Create a text clip (fix: specify a common font that is installed)
+    txt = TextClip(
+        script,
+        fontsize=48,
+        color='white',
+        size=clip.size,
+        font="DejaVu-Sans",  # "DejaVu-Sans" is installed by Dockerfile!
+        method='caption'
+    ).set_position('center').set_duration(clip.duration)
 
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
+    # Load the audio
+    audio = AudioFileClip(audio_path)
 
-    CHUNK_SIZE = 32768
-    with open(destination, "wb") as f:
-        for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:
-                f.write(chunk)
+    # Set audio duration to match video if necessary
+    final_audio = audio.subclip(0, min(audio.duration, clip.duration))
 
-def ensure_subway_video():
-    if not os.path.exists("subway.mp4"):
-        print("⏬ Downloading subway.mp4 from Google Drive (with confirm token support)...")
-        file_id = "1IBRp3tl-dc1sJQlB0md5OZMmt4WCwMrF"   # <--- THIS IS YOUR NEW FILE ID!
-        download_file_from_google_drive(file_id, "subway.mp4")
-        print("✅ subway.mp4 downloaded.")
+    # Combine everything
+    video = CompositeVideoClip([clip, txt])
+    video = video.set_audio(final_audio)
+    video = video.set_duration(min(clip.duration, final_audio.duration))
 
-def create_video(script, voice_path, output_path="output.mp4"):
-    ensure_subway_video()  # ✅ Make sure the background video exists
+    # Write the result to a file
+    video.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=clip.fps)
 
-    print("🎬 Creating video...")
+    print(f"✅ Video saved as {output_path}")
 
-    # Load and loop video to at least 60 seconds
-    base_clip = VideoFileClip("subway.mp4")
-    clip = loop(base_clip, duration=60).resize(width=1080)
-
-    audio = AudioFileClip(voice_path)
-
-    # Create text overlay
-    txt = TextClip(script, fontsize=48, color="white", size=clip.size, method="caption")
-    txt = txt.set_duration(clip.duration)
-
-    # Combine video + text + audio
-    final = CompositeVideoClip([clip, txt.set_pos("center")])
-    final = final.set_audio(audio)
-
-    # Export the final video
-    final.write_videofile(output_path, fps=24)
+# EXAMPLE USAGE
+# create_video("This is a test script", "audio.mp3")
