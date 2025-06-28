@@ -1,28 +1,33 @@
+# Use official Python image
 FROM python:3.11
 
+# Set working directory
 WORKDIR /app
 
-# Copy code into container
+# Copy everything to /app in the container
 COPY . /app
 
-# Upgrade pip to latest version
+# Upgrade pip first
 RUN pip install --upgrade pip
 
-# Install your main dependencies (except moviepy)
+# Install your app's dependencies (pins Pillow 9.5.0 here, but we'll force again at end)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Remove any broken or cached moviepy installs (important!)
+# Remove any possibly pre-installed MoviePy versions, just in case
 RUN rm -rf /usr/local/lib/python3.11/site-packages/moviepy* && \
     rm -rf /usr/local/lib/python3.11/site-packages/MoviePy*
 
-# Install a working, stable version of moviepy (this will include editor.py!)
+# Install the working MoviePy version (1.0.3)
 RUN pip install --force-reinstall --no-cache-dir moviepy==1.0.3
 
-# Confirm that editor.py is present (this is a debug line, keep it until it works)
+# **CRITICAL STEP**: Force reinstall Pillow 9.5.0 *after* MoviePy, to fix the ANTIALIAS bug
+RUN pip install --force-reinstall --no-cache-dir pillow==9.5.0
+
+# (Optional) Sanity check: list MoviePy files
 RUN ls -l /usr/local/lib/python3.11/site-packages/moviepy
 
-# Debug: try to import from moviepy.editor (will fail the build if broken)
+# (Optional) Test MoviePy import to make sure it works!
 RUN python -c "from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, AudioFileClip; print('MoviePy Editor import OK!')"
 
-# Start your app (change this if your entrypoint is different)
+# Default command (adjust as needed)
 CMD ["python", "main.py"]
